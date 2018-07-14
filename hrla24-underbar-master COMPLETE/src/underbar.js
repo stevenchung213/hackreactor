@@ -201,6 +201,7 @@ reduce
     return _.map(collection, function(item){
       return item[key];
     });
+    
   };
 
   // Reduces an array or object to a single value by repetitively calling
@@ -244,6 +245,7 @@ reduce
       }
       return item === target;
     }, false);
+
   };
 
 
@@ -254,16 +256,18 @@ reduce
     return _.reduce(collection, function(trueOrFalse, x) {
       return trueOrFalse && !!(iterator(x));
     }, true);  
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-    callback = iterator || _.identity;
+    iterator = iterator || _.identity;
     return !_.every(collection, function(value) {
       return !iterator(value);
     });
+
   };
 
 
@@ -376,9 +380,11 @@ reduce
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
     var args = Array.prototype.slice.call(arguments, 2);
+    
     return setTimeout(function() {
       return func.apply(this,args);
     }, wait);
+
   };
 
 
@@ -421,6 +427,7 @@ reduce
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    
     return _.map(collection, function(value) {
       if (typeof(functionOrKey) === 'function') {
         return functionOrKey.apply(value, args);
@@ -428,6 +435,7 @@ reduce
         return value[functionOrKey].apply(value, args);
       }
     });
+
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -435,6 +443,7 @@ reduce
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    
     function sorter (a, b) {
       if (typeof iterator === 'function') {
         a = iterator(a);
@@ -454,6 +463,7 @@ reduce
     }
     } 
     return collection.sort(sorter);
+
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -463,24 +473,26 @@ reduce
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
     var zipped = [];
-        var args = [...arguments];
+    var args = [...arguments];
 
-        function pushToArray(index) {
-          var tempArr = [];
-          _.each(args, function(item) {
-            tempArr.push(item[index]);
-          });
-          return tempArr;
-        }
-        var longestArr = args[0];
-        for (var k = 1; k < args.length; k++) {
-          if (args[k].length > longestArr.length) {
-            longestArr = args[k];
-          }
-        }
-        for (var i = 0; i < longestArr.length; i++) {
-          zipped.push(pushToArray(i));
-        }
+    function pushToArray(index) {
+      var tempArr = [];
+      _.each(args, function(item) {
+        tempArr.push(item[index]);
+      });
+      return tempArr;
+    }
+    
+    var longestArr = args[0];
+    for (var i = 1; i < args.length; i++) {
+      if (args[i].length > longestArr.length) {
+        longestArr = args[i];
+      }
+    }
+    for (var j = 0; j < longestArr.length; j++) {
+      zipped.push(pushToArray(j));
+    }
+
         return zipped;
   };
 
@@ -490,6 +502,7 @@ reduce
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
     var result = [];
+    
     var initialArray = function(array, result) {
       _.each(array, function(item) {
         if (Array.isArray(item)) {
@@ -499,6 +512,7 @@ reduce
       }
       });
     };
+
     initialArray(nestedArray, result);
     return result;
   };
@@ -509,12 +523,13 @@ reduce
     var array = Array.prototype.slice.call(arguments);
     var result = array[0].slice();
     var tempResult = [];
+    
     _.each(array, function(item) {
       tempResult = [];
-      _.each(item, function(value) {
+    _.each(item, function(value) {
         result.indexOf(value) > -1 ? tempResult.push(value) : null;
-      });
-      result = tempResult.slice();
+    });
+    result = tempResult.slice();
     });
 
     return result;
@@ -524,16 +539,18 @@ reduce
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
     var args = Array.prototype.slice.call(arguments, 1);
-        var result = array.slice();
-        var tempResult = [];
-        _.each(args, function(item) {
-          tempResult = [];
-        _.each(result, function(val, key) {
-          item.indexOf(val) === -1 ? tempResult.push(val) : null;
-        });
-        result = tempResult.slice();
-        });
-        return result;
+    var result = array.slice();
+    var tempResult = [];
+   
+    _.each(args, function(item) {
+      tempResult = [];
+    _.each(result, function(val, key) {
+      item.indexOf(val) === -1 ? tempResult.push(val) : null;
+    });
+    result = tempResult.slice();
+    });
+
+    return result;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
