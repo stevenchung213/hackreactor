@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="jquery.js"></script>
+    <script src="data_generator.js"></script>
+  </head>
+  <body id ='body'>
+    <div id='title'></div>
+    <div align='center'>
+      <table id='tweets'></table>
+    </div>
+
+    <script>
+
+      $(document).ready(function(){
+        
+        // declaring variables according to references with added styles //
+        var $tweets = $('#tweets');
+        var $body = $('#body');
+        $body.css({'margin':'0px', 'padding':'0px', 'background-color':'green'})
+        // declaring main title 'TWITTLER' box //
+        var $title = $('#title');
+        $title.html('');
+        $title.css({'width':'100%', 'margin': '0px', 'padding':'0px'});
+        var $mainTitle=$('<div></div>');
+        $mainTitle.text('TWITTLER');
+        $mainTitle.css({'width':'100%','background-color':'green', 'color':'white', 'margin':'0px', 'padding':'0px','font-size':'40px', 'text-align':'center'});
+        $mainTitle.attr('id', 'mainTitle');
+        $mainTitle.appendTo($title);
+        // declaring sub title box //
+        var $subTitle=$('<div></div>');
+        $subTitle.text(('buttons for user-specific feeds or more tweets'));
+        $subTitle.css({'width':'100%', 'background-color':'green', 'color':'white', 'margin':'0px', 'padding':'2px', 'font-size':'13px', 'text-align':'left'});
+        $subTitle.attr('id', 'subTitle');
+        $subTitle.appendTo($title);
+        // declaring buttons box //
+        var $userFilter=$('<div><button type="button" class="button" id="shawndrost">@shawndrost</button><button type="button" class="button" id="sharksforcheap">@sharksforcheap</button><button type="button" class="button" id="mracus">@mracus</button><button type="button" class="button" id= "douglascalhoun">@douglascalhoun</button><button type="button" class="button" id="allUsersButton">all users</button><button type="button" class="button" id="newTweets">new tweets</button></div>');
+        $userFilter.appendTo($title);
+        
+        
+        
+        // declaring twittler function //
+        var twittler = function(collection) {
+          $tweets.html('');
+          var index = collection.length - 1;
+            while(index >= 0){
+            var tweet = collection[index];
+            var $tweet = $('<div style="width:600px;height:50px;border:1px solid green;padding:4px 10px;border-radius:5px;background-color:white; line-height:25px;font-size:14px;font-family:Arial"></div>');
+            var $pad=$('<div style="height:4px;"></div>');
+            $pad.appendTo($tweets);
+            $tweet.text('@' + tweet.user + ': ' + tweet.message + ' --posted @ ' + tweet.created_at);
+            $tweet.appendTo($tweets);
+            $tweet.addClass(tweet.user);
+            index -= 1;
+        }
+        }
+        twittler(streams.home);
+
+        var generateNewTweets = function() {
+          twittler(streams.home);
+        }
+
+        // declaring functions for filter buttons //
+        function shawndrostFilterButton () {
+          $("div").filter('.shawndrost').show();
+          $("div").filter('.sharksforcheap').hide();
+          $("div").filter('.mracus').hide();
+          $("div").filter('.douglascalhoun').hide();
+        }
+        function sharksforcheapFilterButton () {
+          $("div").filter('.sharksforcheap').show();
+          $("div").filter('.shawndrost').hide();
+          $("div").filter('.mracus').hide();
+          $("div").filter('.douglascalhoun').hide();
+        }
+        function mracusFilterButton () {
+          $("div").filter('.mracus').show();
+          $("div").filter('.sharksforcheap').hide();
+          $("div").filter('.shawndrost').hide();
+          $("div").filter('.douglascalhoun').hide();
+        }
+        function douglascalhounFilterButton () {
+          $("div").filter('.douglascalhoun').show();
+          $("div").filter('.sharksforcheap').hide();
+          $("div").filter('.mracus').hide();
+          $("div").filter('.shawndrost').hide();
+        }
+        function allUsersButton () {
+          $("div").filter('.douglascalhoun').show();
+          $("div").filter('.sharksforcheap').show();
+          $("div").filter('.mracus').show();
+          $("div").filter('.shawndrost').show();
+        }
+
+        // adding event triggers 'on click' for buttons //
+        document.getElementById("allUsersButton").addEventListener("click", allUsersButton);
+        document.getElementById("shawndrost").addEventListener("click", shawndrostFilterButton);
+        document.getElementById("sharksforcheap").addEventListener("click", sharksforcheapFilterButton);
+        document.getElementById("mracus").addEventListener("click", mracusFilterButton);
+        document.getElementById("douglascalhoun").addEventListener("click", douglascalhounFilterButton);
+        document.getElementById("newTweets").addEventListener("click", generateNewTweets);
+
+
+      });
+      
+    </script>
+    <style> 
+      .button {
+        color: black;
+        background: yellow;
+        border: 2px solid green;
+        border-radius: 14px;
+        line-height: 30px;
+        font-size: 15px;
+      }
+      .body {
+        font-family: 'Arial';
+      }
+      #newTweets {
+        color: black;
+        background: orange;
+      }
+      </style>
+  </body>
+</html>
