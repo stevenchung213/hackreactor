@@ -1,10 +1,10 @@
-const _ = require('underscore');
-const expect = require('chai').expect;
-const assert = require('chai').assert;
-const sinon = require('sinon');
-const chai = require("chai");
-const sinonChai = require("sinon-chai");
-chai.use(require('sinon-chai'));
+// const _ = require('underscore');
+// const expect = require('chai').expect;
+// const assert = require('chai').assert;
+// const sinon = require('sinon');
+// const chai = require("chai");
+// const sinonChai = require("sinon-chai");
+// chai.use(require('sinon-chai'));
 
 /*  -underbar functions-
  -part 1-      -part 2-    -advanced-
@@ -225,11 +225,15 @@ reduce
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    if (accumulator === undefined) {
-      accumulator = collection[0];
-    }
-    _.each(collection, function(value) {
+    // declare checkForArgs to set accumulator to collection[0] //
+    var checkForArgs = arguments.length === 2; 
+    _.each(collection, function(value, key, collection) {
+      if (checkForArgs) {
+        accumulator = value;
+        checkForArgs = false;
+      } else {
       accumulator = iterator(accumulator, value);
+      }
     });
 
     return accumulator;
@@ -361,14 +365,24 @@ reduce
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    
+ // THIS IMPLEMENTATION DOESN'T WORK DUE TO ARGUMENTS STAYING WITHIN SCOPE /start//
+    // var result = {};
+    // return function() {
+    //   if (!result.hasOwnProperty(arguments[0])) {    
+    //     result[arguments[0]] = func.apply(null, arguments);
+    //   }
+
+    //   return result[arguments[0]];
+    // }
+  // THIS IMPLEMENTATION DOESN'T WORK DUE TO ARGUMENTS STAYING WITHIN SCOPE /end//
     var result = {};
-
-    return function() {
-      if (!result.hasOwnProperty(arguments[0])) {
-        result[arguments[0]] = func.apply(this, arguments);
+    return function(){
+      var input = JSON.stringify(arguments);  // -> make arguments that are passed in out of scope //
+      if( !result.hasOwnProperty(input) ){
+        result[input] = func.apply(null, arguments);
       }
-
-      return result[arguments[0]];
+      return result[input];
     }
   };
 
@@ -401,15 +415,14 @@ reduce
   _.shuffle = function(array) {
     var result = array.slice();
     var counter = array.length;
-    var x;
-    var index;
+    var x, i;
 
     while (counter > 0) {
-      index = Math.floor(Math.random() * counter);
+      i = Math.floor(Math.random() * counter);
       counter--;
       x = result[counter];
-      result[counter] = result[index];
-      result[index] = x;
+      result[counter] = result[i];
+      result[i] = x;
     }
 
     return result;
@@ -472,28 +485,18 @@ reduce
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
-    var zipped = [];
-    var args = [...arguments];
+    var max = 0;
+    var result = new Array(max);
 
-    function pushToArray(index) {
-      var tempArr = [];
-      _.each(args, function(item) {
-        tempArr.push(item[index]);
-      });
-      return tempArr;
-    }
-    
-    var longestArr = args[0];
-    for (var i = 1; i < args.length; i++) {
-      if (args[i].length > longestArr.length) {
-        longestArr = args[i];
-      }
-    }
-    for (var j = 0; j < longestArr.length; j++) {
-      zipped.push(pushToArray(j));
+    _.each(arguments, function(arg) {
+      max = Math.max(arg.length, max);
+    });
+
+    for (var i = 0; i < max; i++) {
+      result[i] = _.pluck(arguments, i);
     }
 
-        return zipped;
+    return result;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -520,37 +523,21 @@ reduce
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
-    var array = Array.prototype.slice.call(arguments);
-    var result = array[0].slice();
-    var tempResult = [];
-    
-    _.each(array, function(item) {
-      tempResult = [];
-    _.each(item, function(value) {
-        result.indexOf(value) > -1 ? tempResult.push(value) : null;
+    var argClone = Array.prototype.slice.call(arguments);
+    return _.filter(_.uniq(arguments[0]), function(item) {
+      return _.every(argClone, function(array) {
+        return _.indexOf(array, item) > -1;
+      });
     });
-    result = tempResult.slice();
-    });
-
-    return result;
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    var result = array.slice();
-    var tempResult = [];
-   
-    _.each(args, function(item) {
-      tempResult = [];
-    _.each(result, function(val, key) {
-      item.indexOf(val) === -1 ? tempResult.push(val) : null;
+    var argClone = _.flatten(Array.prototype.slice.call(arguments, 1));
+    return _.filter(array, function(item) {
+      return !_.contains(argClone, item);
     });
-    result = tempResult.slice();
-    });
-
-    return result;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
@@ -559,19 +546,16 @@ reduce
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
-    var result;
     var alreadyCalled = false;
-    var args = [...arguments].slice(2);
-
     return function() {
       if (!alreadyCalled) {
-        result = func.apply(this, arguments);
+        alreadyCalled = true;
+        func.apply(Array.prototype.slice.apply(arguments));
         setTimeout(function() {
-          alreadyCalled = true;
+          alreadyCalled = false;
         }, wait);
       }
-      
-    return result;
+    };
   };
-};
-});
+}());
+
