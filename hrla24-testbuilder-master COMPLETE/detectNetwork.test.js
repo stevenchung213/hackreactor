@@ -45,7 +45,16 @@ var detectNetwork = function(cardNumber){
 // You don't actually want to fill *this* value in on line 9, but you'll see
 // other places in this file where you'll replace the FILL_ME_IN with a
 // different value.
-var assert = require('assert');
+var assert = chai.assert;
+function assertObjectsEqual(actual, expected, testName) {
+  if (JSON.stringify(actual) === JSON.stringify(expected)) {
+    console.log('Test passed');
+    return true;
+  } else {
+    console.log('Test ['+testName+'] failed: expected ', expected, ' but got, ', actual );
+    return false;
+  }
+}
  
 // describe('Introduction to Mocha Tests - READ ME FIRST', function() {
 //   // A Mocha test is just a function!
@@ -123,7 +132,7 @@ describe('Visa', function() {
   // Chai provides an assert that acts the same as our previous assert.
   // Search the documentation to figure out how to access it. 
   //   http://chaijs.com/
-  var assert = require('chai').assert;
+  var assert = chai.assert;
  
 
   it('has a prefix of 4 and a length of 13', function() {
@@ -144,7 +153,7 @@ describe('MasterCard', function() {
   // Expect syntax is one way to do this, but there are others. 
   // If you want to know more, check out the documentation. 
   //   http://chaijs.com/api/bdd/
-  var expect = require('chai').expect;
+  var expect = chai.expect;
  
   it('has a prefix of 51 and length of 16', function() {
     expect(detectNetwork('5112345678901234')).to.equal('MasterCard');
@@ -169,7 +178,7 @@ describe('MasterCard', function() {
 
   // var should = chai.should();  // couldn't get chai to work....smh....// 
   // going with expect =>  // 
-  var expect = require('chai').expect;
+  var expect = chai.expect;
   
   it('has a prefix of 54 and a length of 16', function() {
     expect(detectNetwork('5412341234123412')).to.equal('MasterCard');
@@ -185,7 +194,7 @@ describe('Discover', function() {
   // Tests without a function will be marked as "pending" and not run
   // Implement these tests (and others) and make them pass!
   
-  var expect = require('chai').expect;
+  var expect = chai.expect;
 
   it('has a prefix of 6011 and a length of 16', function(){
     expect(detectNetwork('6011123456789012')).to.equal('Discover');
@@ -217,7 +226,7 @@ describe('Discover', function() {
 
 describe('Maestro', function() {
   // Write full test coverage for the Maestro card
-  var expect = require('chai').expect;
+  var expect = chai.expect;
   var actual = '501812341234';
   for (var cardLength = 12; cardLength <= 19; cardLength++){
     (function (cardLength, actual) {
@@ -261,7 +270,7 @@ describe('Maestro', function() {
 });
 
 describe('China UnionPay', function(){
-  var expect = require('chai').expect;
+  var expect = chai.expect;
 
   for (var prefix = 622126; prefix <= 622925; prefix++){
     var actual = prefix + '1234123412';
@@ -302,7 +311,7 @@ for (var prefix = 6282; prefix <= 6288; prefix++){
 
 
 describe('Switch', function(){
-  var expect = require('chai').expect;
+  var expect = chai.expect;
 
   var prefixes = [4903, 4905, 4911, 4936, 564182, 633110, 6333, 6759];
 

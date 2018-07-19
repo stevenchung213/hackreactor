@@ -156,7 +156,7 @@ reduce
   
 
   // Produce a duplicate-free version of the array.
-  _.uniq = function(array, isSorted, iterator) {
+  _.uniq = function(array, iterator) {
     var resultObj = {};
     var resultArr = [];
 
@@ -295,9 +295,8 @@ reduce
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
     var result = obj;
-    var list = Array.prototype.slice.call(arguments, 1);
-    
-    _.each(list, function(source) {
+        
+    _.each(arguments, function(source) {
       if (source) {
         for (var prop in source) {
           result[prop] = source[prop];
@@ -311,9 +310,8 @@ reduce
   // exists in obj
   _.defaults = function(obj) {
     var result = obj;
-    var list = Array.prototype.slice.call(arguments, 1);
 
-    _.each(list, function(source) {
+    _.each(arguments, function(source) {
       if (source) {
         for (var prop in source) {
           if (result.hasOwnProperty(prop) === false) {
@@ -365,20 +363,10 @@ reduce
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    
- // THIS IMPLEMENTATION DOESN'T WORK DUE TO ARGUMENTS STAYING WITHIN SCOPE /start//
-    // var result = {};
-    // return function() {
-    //   if (!result.hasOwnProperty(arguments[0])) {    
-    //     result[arguments[0]] = func.apply(null, arguments);
-    //   }
-
-    //   return result[arguments[0]];
-    // }
-  // THIS IMPLEMENTATION DOESN'T WORK DUE TO ARGUMENTS STAYING WITHIN SCOPE /end//
+ 
     var result = {};
     return function(){
-      var input = JSON.stringify(arguments);  // -> make arguments that are passed in out of scope //
+      var input = JSON.stringify(arguments);  // -> stringify to check if 'property' exists //
       if( !result.hasOwnProperty(input) ){
         result[input] = func.apply(null, arguments);
       }
